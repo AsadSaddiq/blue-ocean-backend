@@ -73,18 +73,18 @@ export class MotorsController {
     );
   }
 
-  // @Get(':id')
-  // @ApiParam({
-  //   name: 'id',
-  //   type: String,
-  //   required: true,
-  // })
-  // @ApiOkResponse({
-  //   type: Motor,
-  // })
-  // findOne(@Param('id') id: string) {
-  //   return this.motorsService.findOne(id);
-  // }
+  @Get(':id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @ApiOkResponse({
+    type: Motor,
+  })
+  findOne(@Param('id') id: string) {
+    return this.motorsService.findOne(id);
+  }
 
   // @Patch(':id')
   // @ApiParam({
@@ -113,10 +113,9 @@ export class MotorsController {
   @ApiCreatedResponse({
     type: Feature,
   })
-  createFeature(@Body() createFeatureDto: CreateFeatureDto) {
-    return this.motorsService.creteFeature(createFeatureDto);
-  }
-
+  // createFeature(@Body() createFeatureDto: CreateFeatureDto) {
+  //   return this.motorsService.creteFeature(createFeatureDto);
+  // }
   @Get('feature')
   @ApiResponse({ type: [Feature] })
   findFeature() {

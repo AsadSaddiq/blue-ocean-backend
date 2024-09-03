@@ -17,14 +17,6 @@ export class SparePartEntity {
   partType: string;
 
   @ApiProperty({ nullable: true })
-  @Column({ type: 'text', nullable: true })
-  description?: string;
-
-  @ApiProperty()
-  @Column({ type: 'varchar', length: 100 })
-  manufacturer: string;
-
-  @ApiProperty({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: true })
   modelNumber?: string;
 
@@ -33,8 +25,4 @@ export class SparePartEntity {
     onDelete: 'CASCADE',
   })
   motor: MotorEntity;
-
-  @ApiProperty()
-  @Column({ type: 'int', default: 0 })
-  warrantyPeriod: number;
 }

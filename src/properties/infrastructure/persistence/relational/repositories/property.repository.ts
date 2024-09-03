@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Brackets, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { PropertyEntity } from '../entities/property.entity';
 import { AmenityEntity } from '../entities/amenity.entity';
 // import { RatingEntity } from '../entities/rating.entity';
@@ -16,6 +16,7 @@ import { PropertyImageMapper } from '../mappers/property-image.mapper';
 import { AmenityMapper } from '../mappers/amenity.mapper';
 // import { RatingMapper } from '../mappers/rating.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { FindAllPropertiesDto } from '../../../../dto/find-all-properties.dto';
 
 @Injectable()
 export class PropertyRelationalRepository implements PropertyRepository {
@@ -73,74 +74,151 @@ export class PropertyRelationalRepository implements PropertyRepository {
 
   // async findAllWithPagination({
   //   paginationOptions,
+  //   filterOptions,
   // }: {
   //   paginationOptions: IPaginationOptions;
+  //   filterOptions?: {
+  //     purpose?: string;
+  //     minPrice?: number;
+  //     maxPrice?: number;
+  //     userId?: string;
+  //     propertyType?: string;
+  //   };
   // }): Promise<Property[]> {
-  //   const entities = await this.propertyRepository.find({
-  //     skip: (paginationOptions.page - 1) * paginationOptions.limit,
-  //     take: paginationOptions.limit,
-  //     relations: ['propertyImages', 'amenities'],
-  //   });
+  //   const query = this.propertyRepository
+  //     .createQueryBuilder('property')
+  //     .skip((paginationOptions.page - 1) * paginationOptions.limit)
+  //     .take(paginationOptions.limit)
+  //     .leftJoinAndSelect('property.propertyImages', 'propertyImages')
+  //     .leftJoinAndSelect('property.amenities', 'amenities')
+  //     .leftJoinAndSelect('property.ratings', 'ratings')
+  //     .leftJoinAndSelect('property.owner', 'owner');
 
-  //   return entities.map((user) => PropertyMapper.toDomain(user));
+  //   // Apply filters based on the provided filterOptions
+  //   if (filterOptions?.purpose) {
+  //     query.andWhere('property.purpose = :purpose', {
+  //       purpose: filterOptions.purpose,
+  //     });
+  //   }
+  //   if (filterOptions?.minPrice) {
+  //     query.andWhere('property.price >= :minPrice', {
+  //       minPrice: filterOptions.minPrice,
+  //     });
+  //   }
+  //   if (filterOptions?.maxPrice) {
+  //     query.andWhere('property.price <= :maxPrice', {
+  //       maxPrice: filterOptions.maxPrice,
+  //     });
+  //   }
+  //   if (filterOptions?.userId) {
+  //     query.andWhere('property.ownerId = :userId', {
+  //       userId: filterOptions.userId,
+  //     });
+  //   }
+  //   if (filterOptions?.propertyType) {
+  //     query.andWhere('property.propertyType = :propertyType', {
+  //       propertyType: filterOptions.propertyType,
+  //     });
+  //   }
+
+  //   // Execute the query and retrieve the results
+  //   const entities = await query.getMany();
+
+  //   // Map the results to the domain model
+  //   return entities.map((entity) => PropertyMapper.toDomain(entity));
   // }
 
   async findAllWithPagination({
     paginationOptions,
-    filterOptions,
+    filters,
   }: {
     paginationOptions: IPaginationOptions;
-    filterOptions?: {
-      purpose?: string;
-      minPrice?: number;
-      maxPrice?: number;
-      userId?: string;
-      propertyType?: string;
-    };
-  }): Promise<Property[]> {
-    const query = this.propertyRepository
-      .createQueryBuilder('property')
+    filters: FindAllPropertiesDto;
+  }): Promise<PropertyEntity[]> {
+    const queryBuilder = this.propertyRepository.createQueryBuilder('property');
+
+    this.addJoins(queryBuilder);
+    this.applyFilters(queryBuilder, filters);
+
+    queryBuilder
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
-      .take(paginationOptions.limit)
-      .leftJoinAndSelect('property.propertyImages', 'propertyImages')
-      .leftJoinAndSelect('property.amenities', 'amenities')
-      .leftJoinAndSelect('property.ratings', 'ratings')
-      .leftJoinAndSelect('property.owner', 'owner');
+      .take(paginationOptions.limit);
 
-    // Apply filters based on the provided filterOptions
-    if (filterOptions?.purpose) {
-      query.andWhere('property.purpose = :purpose', {
-        purpose: filterOptions.purpose,
-      });
-    }
-    if (filterOptions?.minPrice) {
-      query.andWhere('property.price >= :minPrice', {
-        minPrice: filterOptions.minPrice,
-      });
-    }
-    if (filterOptions?.maxPrice) {
-      query.andWhere('property.price <= :maxPrice', {
-        maxPrice: filterOptions.maxPrice,
-      });
-    }
-    if (filterOptions?.userId) {
-      query.andWhere('property.ownerId = :userId', {
-        userId: filterOptions.userId,
-      });
-    }
-    if (filterOptions?.propertyType) {
-      query.andWhere('property.propertyType = :propertyType', {
-        propertyType: filterOptions.propertyType,
-      });
-    }
+    // Order by creation date by default
+    queryBuilder.orderBy('property.createdAt', 'DESC');
 
-    // Execute the query and retrieve the results
-    const entities = await query.getMany();
-
-    // Map the results to the domain model
-    return entities.map((entity) => PropertyMapper.toDomain(entity));
+    const properties = await queryBuilder.getMany();
+    return properties;
   }
 
+  private addJoins(queryBuilder: SelectQueryBuilder<PropertyEntity>) {
+    queryBuilder.leftJoinAndSelect('property.propertyImages', 'images');
+    queryBuilder.leftJoinAndSelect('property.owner', 'owner');
+    queryBuilder.leftJoinAndSelect('property.ratings', 'ratings');
+  }
+
+  private applyFilters(
+    queryBuilder: SelectQueryBuilder<PropertyEntity>,
+    filters: FindAllPropertiesDto,
+  ) {
+    const { globalSearch, userId, propertyType, minPrice, maxPrice, purpose } =
+      filters;
+
+    // Global search filter
+    if (globalSearch && globalSearch.trim()) {
+      queryBuilder.andWhere(
+        new Brackets((qb) => {
+          qb.where('property.title LIKE :globalSearch', {
+            globalSearch: `%${globalSearch}%`,
+          })
+            .orWhere('property.description LIKE :globalSearch', {
+              globalSearch: `%${globalSearch}%`,
+            })
+            .orWhere('property.city LIKE :globalSearch', {
+              globalSearch: `%${globalSearch}%`,
+            })
+            .orWhere('property.address LIKE :globalSearch', {
+              globalSearch: `%${globalSearch}%`,
+            })
+            .orWhere('property.country LIKE :globalSearch', {
+              globalSearch: `%${globalSearch}%`,
+            })
+            .orWhere('property.contactName LIKE :globalSearch', {
+              globalSearch: `%${globalSearch}%`,
+            });
+        }),
+      );
+    }
+
+    // Filter by user ID
+    if (userId) {
+      queryBuilder.andWhere('property.owner.id = :userId', { userId });
+    }
+
+    // Filter by property type
+    if (propertyType) {
+      queryBuilder.andWhere('property.propertyType = :propertyType', {
+        propertyType,
+      });
+    }
+
+    // Filter by minimum price
+    if (minPrice !== undefined && minPrice !== null) {
+      queryBuilder.andWhere('property.price >= :minPrice', { minPrice });
+    }
+
+    // Filter by maximum price
+    if (maxPrice !== undefined && maxPrice !== null) {
+      queryBuilder.andWhere('property.price <= :maxPrice', { maxPrice });
+    }
+
+    // Filter by purpose
+    if (purpose) {
+      queryBuilder.andWhere('property.purpose = :purpose', {
+        purpose,
+      });
+    }
+  }
   async findById(id: Property['id']): Promise<NullableType<Property>> {
     const entity = await this.propertyRepository.findOne({
       where: { id },
@@ -237,14 +315,11 @@ export class PropertyRelationalRepository implements PropertyRepository {
     id: Property['id'],
     payload: Partial<Property>,
   ): Promise<Property> {
-    // Find the existing property entity
-
     const entity = await this.propertyRepository.findOne({
       where: { id },
       relations: ['propertyImages', 'amenities'],
     });
 
-    // Throw an error if the entity is not found
     if (!entity) {
       throw new Error('Record not found');
     }

@@ -25,7 +25,7 @@ export abstract class MotorRepository {
 
   abstract remove(id: Motor['id']): Promise<void>;
 
-  abstract creteFeature(data: Feature): Promise<Feature>;
+  // abstract creteFeature(data: Feature): Promise<Feature>;
 
   abstract findFeature(): Promise<Feature[]>;
 }

@@ -3,6 +3,7 @@ import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { Amenity } from '../../domain/amenity';
 import { Property } from '../../domain/property';
+import { FindAllPropertiesDto } from '../../dto/find-all-properties.dto';
 
 export abstract class PropertyRepository {
   abstract create(
@@ -18,11 +19,13 @@ export abstract class PropertyRepository {
   abstract findAllWithPagination({
     paginationOptions,
     filterOptions,
+    filters,
   }: {
     paginationOptions: IPaginationOptions;
     filterOptions?: {
       purpose?: string;
     };
+    filters?: FindAllPropertiesDto;
   }): Promise<Property[]>;
 
   abstract findById(id: Property['id']): Promise<NullableType<Property>>;

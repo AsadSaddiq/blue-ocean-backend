@@ -6,6 +6,7 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Property } from './domain/property';
 import { CreateAmenityDto } from './dto/create-amenity.dto';
 import { Amenity } from './domain/amenity';
+import { FindAllPropertiesDto } from './dto/find-all-properties.dto';
 
 @Injectable()
 export class PropertiesService {
@@ -24,23 +25,17 @@ export class PropertiesService {
 
   findAllWithPagination({
     paginationOptions,
-    filterOptions,
+    filters,
   }: {
     paginationOptions: IPaginationOptions;
-    filterOptions?: {
-      purpose?: string;
-      minPrice?: number;
-      maxPrice?: number;
-      userId?: string;
-      propertyType?: string;
-    };
+    filters: FindAllPropertiesDto;
   }) {
     return this.propertyRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,
       },
-      filterOptions,
+      filters,
     });
   }
 

@@ -20,9 +20,6 @@ export class MotorMapper {
     domainEntity.transmission = raw.transmission ?? '';
     domainEntity.manufacturer = raw.manufacturer ?? '';
     domainEntity.model = raw.model ?? '';
-    domainEntity.year = raw.year ?? 0;
-    domainEntity.weight = raw.weight ?? 0;
-    domainEntity.dimensions = raw.dimensions ?? '';
     domainEntity.maxSpeed = raw.maxSpeed ?? 0;
     domainEntity.acceleration = raw.acceleration ?? 0;
     domainEntity.fuelCapacity = raw.fuelCapacity ?? 0;
@@ -33,8 +30,6 @@ export class MotorMapper {
     domainEntity.interiorColor = raw.interiorColor ?? '';
     domainEntity.seatingCapacity = raw.seatingCapacity ?? 0;
     domainEntity.doors = raw.doors ?? 0;
-    domainEntity.safetyRating = raw.safetyRating ?? 0;
-    domainEntity.warrantyYears = raw.warrantyYears ?? 0;
     domainEntity.insuranceProvider = raw.insuranceProvider ?? '';
     domainEntity.insuranceExpiryDate = raw.insuranceExpiryDate;
     domainEntity.numberOfCylinders = raw.numberOfCylinders ?? 0;
@@ -63,9 +58,6 @@ export class MotorMapper {
     persistenceEntity.transmission = domainEntity.transmission ?? '';
     persistenceEntity.manufacturer = domainEntity.manufacturer ?? '';
     persistenceEntity.model = domainEntity.model ?? '';
-    persistenceEntity.year = domainEntity.year ?? 0;
-    persistenceEntity.weight = domainEntity.weight ?? 0;
-    persistenceEntity.dimensions = domainEntity.dimensions ?? '';
     persistenceEntity.maxSpeed = domainEntity.maxSpeed ?? 0;
     persistenceEntity.acceleration = domainEntity.acceleration ?? 0;
     persistenceEntity.fuelCapacity = domainEntity.fuelCapacity ?? 0;
@@ -76,8 +68,6 @@ export class MotorMapper {
     persistenceEntity.interiorColor = domainEntity.interiorColor ?? '';
     persistenceEntity.seatingCapacity = domainEntity.seatingCapacity ?? 0;
     persistenceEntity.doors = domainEntity.doors ?? 0;
-    persistenceEntity.safetyRating = domainEntity.safetyRating ?? 0;
-    persistenceEntity.warrantyYears = domainEntity.warrantyYears ?? 0;
     persistenceEntity.insuranceProvider = domainEntity.insuranceProvider ?? '';
     persistenceEntity.insuranceExpiryDate = domainEntity.insuranceExpiryDate;
     persistenceEntity.numberOfCylinders = domainEntity.numberOfCylinders ?? 0;

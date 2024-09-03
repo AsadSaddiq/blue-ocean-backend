@@ -16,6 +16,11 @@ import { SparePartEntity } from './spare-part.entity';
 import { RatingEntity } from './rating.entity';
 import { RepaintEntity } from './repaint.entity';
 import { FeatureEntity } from './feature.entity';
+import { VehicleBrand } from '../../../../enum/vehicle-brand.enum';
+import { Currency } from '../../../../enum/currency.enum';
+import { FuelType } from '../../../../enum/fuel-type.enum';
+import { TransmissionType } from '../../../../enum/transmission-type.enum';
+import { VehicleType } from '../../../../enum/vehicle-type.enum';
 
 @Entity({ name: 'motor' })
 export class MotorEntity {
@@ -29,11 +34,11 @@ export class MotorEntity {
 
   @ApiProperty()
   @Column({ type: 'varchar', length: 100, default: 'other' })
-  brandName: string;
+  brandName: VehicleBrand;
 
   @ApiProperty()
   @Column({ type: 'varchar', length: 20 })
-  vehicleType: string;
+  vehicleType: VehicleType;
 
   @ApiProperty()
   @Column({ type: 'float' })
@@ -49,11 +54,11 @@ export class MotorEntity {
 
   @ApiProperty()
   @Column({ type: 'varchar', length: 10 })
-  fuelType: string;
+  fuelType: FuelType;
 
   @ApiProperty()
   @Column({ type: 'varchar', length: 20 })
-  transmission: string;
+  transmission: TransmissionType;
 
   @ApiProperty()
   @Column({ type: 'varchar', length: 100 })
@@ -62,18 +67,6 @@ export class MotorEntity {
   @ApiProperty()
   @Column({ type: 'varchar', length: 100, default: 'unknown' })
   model: string;
-
-  @ApiProperty()
-  @Column({ type: 'int' })
-  year: number;
-
-  @ApiProperty()
-  @Column({ type: 'float' })
-  weight: number;
-
-  @ApiProperty()
-  @Column({ type: 'varchar', length: 100 })
-  dimensions: string;
 
   @ApiProperty()
   @Column({ type: 'int' })
@@ -97,7 +90,7 @@ export class MotorEntity {
 
   @ApiProperty()
   @Column({ type: 'varchar', length: 6, default: 'USD' })
-  currency: string;
+  currency: Currency;
 
   @ApiProperty()
   @CreateDateColumn()
@@ -122,14 +115,6 @@ export class MotorEntity {
   @ApiProperty()
   @Column({ type: 'int', default: 4 })
   doors: number;
-
-  @ApiProperty()
-  @Column({ type: 'float', default: 0 })
-  safetyRating: number;
-
-  @ApiProperty()
-  @Column({ type: 'int', default: 0 })
-  warrantyYears: number;
 
   @ApiProperty({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: true })
@@ -156,7 +141,7 @@ export class MotorEntity {
     nullable: false,
     onDelete: 'CASCADE',
   })
-  user: UserEntity;
+  user: any;
 
   @ApiProperty({ type: () => MotorImageEntity, isArray: true })
   @OneToMany(() => MotorImageEntity, (motorImage) => motorImage.motor)

@@ -45,4 +45,9 @@ export class FindAllPropertiesDto {
   @IsOptional()
   @IsString()
   propertyType?: string;
+
+  @ApiPropertyOptional({ description: 'global Filter' })
+  @IsOptional()
+  @IsString()
+  globalSearch?: string;
 }

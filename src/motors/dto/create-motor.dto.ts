@@ -4,9 +4,7 @@ import {
   IsNumber,
   IsOptional,
   IsArray,
-  // IsUUID,
   IsDateString,
-  // IsIn,
 } from 'class-validator';
 import { CreateMotorImageDto } from './create-motor-image.dto';
 import { CreateSparePartDto } from './create-spare-part.dto';
@@ -14,7 +12,12 @@ import { CreateSparePartDto } from './create-spare-part.dto';
 import { CreateRepaintDto } from './create-repaint.dto';
 import { CreateFeatureDto } from './create-feature.dto';
 import { Type } from 'class-transformer';
-// import { UUID } from 'crypto';
+import { CreateRatingDto } from './create-rating.dto';
+import { Currency } from '../enum/currency.enum';
+import { FuelType } from '../enum/fuel-type.enum';
+import { TransmissionType } from '../enum/transmission-type.enum';
+import { VehicleBrand } from '../enum/vehicle-brand.enum';
+import { VehicleType } from '../enum/vehicle-type.enum';
 
 export class CreateMotorDto {
   @ApiProperty()
@@ -24,11 +27,11 @@ export class CreateMotorDto {
   @ApiProperty({ default: 'other' })
   @IsString()
   @IsOptional()
-  brandName: string;
+  brandName: VehicleBrand;
 
   @ApiProperty()
   @IsString()
-  vehicleType: string;
+  vehicleType: VehicleType;
 
   @ApiProperty()
   @IsNumber()
@@ -44,11 +47,11 @@ export class CreateMotorDto {
 
   @ApiProperty()
   @IsString()
-  fuelType: string;
+  fuelType: FuelType;
 
   @ApiProperty()
   @IsString()
-  transmission: string;
+  transmission: TransmissionType;
 
   @ApiProperty()
   @IsString()
@@ -58,18 +61,6 @@ export class CreateMotorDto {
   @IsString()
   @IsOptional()
   model: string;
-
-  @ApiProperty()
-  @IsNumber()
-  year: number;
-
-  @ApiProperty()
-  @IsNumber()
-  weight: number;
-
-  @ApiProperty()
-  @IsString()
-  dimensions: string;
 
   @ApiProperty()
   @IsNumber()
@@ -96,7 +87,7 @@ export class CreateMotorDto {
   @ApiProperty({ default: 'USD' })
   @IsString()
   @IsOptional()
-  currency: string;
+  currency: Currency;
 
   @ApiProperty({ default: 'unspecified' })
   @IsString()
@@ -117,16 +108,6 @@ export class CreateMotorDto {
   @IsNumber()
   @IsOptional()
   doors: number;
-
-  @ApiProperty({ default: 0 })
-  @IsNumber()
-  @IsOptional()
-  safetyRating: number;
-
-  @ApiProperty({ default: 0 })
-  @IsNumber()
-  @IsOptional()
-  warrantyYears: number;
 
   @ApiProperty({ nullable: true })
   @IsString()
@@ -155,7 +136,7 @@ export class CreateMotorDto {
 
   @ApiProperty()
   @IsNumber()
-  user: number;
+  user: any;
 
   @ApiProperty({ type: [CreateMotorImageDto], required: false, isArray: true })
   @IsOptional()
@@ -172,6 +153,11 @@ export class CreateMotorDto {
   @IsOptional()
   @IsArray()
   repaints: CreateRepaintDto[];
+
+  @ApiProperty({ type: [CreateRatingDto], required: false, isArray: true })
+  @IsOptional()
+  @IsArray()
+  ratings?: CreateRatingDto[];
 
   @ApiProperty({ type: [CreateFeatureDto], required: false, isArray: true })
   @IsOptional()

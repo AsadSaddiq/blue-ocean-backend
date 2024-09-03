@@ -1,30 +1,28 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class Rating {
-  @ApiProperty({ type: String })
-  id: string;
-
-  @ApiProperty()
-  createdAt: Date;
-
-  @ApiProperty()
-  updatedAt: Date;
-
-  @ApiProperty({ type: String })
+  @ApiProperty({
+    type: String,
+    example: 'motor123',
+  })
   motorId: string;
 
-  @ApiProperty({ type: String })
+  @ApiProperty({
+    type: String,
+    example: 'Engine',
+  })
   part: string;
 
-  @ApiProperty({ type: Number })
+  @ApiProperty({
+    type: Number,
+    example: 5,
+  })
   rating: number;
 
-  @ApiProperty({ type: String, nullable: true })
+  @ApiProperty({
+    type: String,
+    example: 'Excellent performance',
+    nullable: true,
+  })
   review?: string;
-
-  @ApiProperty({ type: String })
-  ratedBy: string;
-
-  @ApiProperty({ type: Date })
-  dateRated: Date;
 }

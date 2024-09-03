@@ -82,12 +82,13 @@ export class PropertiesController {
           page,
           limit,
         },
-        filterOptions: {
+        filters: {
           purpose: query.purpose,
           minPrice: query.minPrice,
           maxPrice: query.maxPrice,
           userId: query.userId,
           propertyType: query.propertyType,
+          globalSearch: query.globalSearch,
         },
       }),
       { page, limit },

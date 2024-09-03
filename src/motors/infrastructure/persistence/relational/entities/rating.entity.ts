@@ -26,14 +26,6 @@ export class RatingEntity {
   @Column({ type: 'text', nullable: true })
   review?: string;
 
-  @ApiProperty()
-  @Column({ type: 'varchar', length: 100 })
-  ratedBy: string;
-
-  @ApiProperty()
-  @CreateDateColumn()
-  dateRated: Date;
-
   @ApiProperty({ type: () => MotorEntity })
   @ManyToOne(() => MotorEntity, (motor) => motor.ratings, {
     onDelete: 'CASCADE',

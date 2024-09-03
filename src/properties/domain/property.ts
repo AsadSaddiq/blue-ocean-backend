@@ -1,6 +1,7 @@
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { PropertyImage } from './propertyImage';
+import { Amenity } from './amenity';
 // import { User } from '../../users/domain/user';
 
 export class Property {
@@ -195,6 +196,7 @@ export class Property {
     example: ['e7a1f9c4-28c1-4ef5-82e8-75f4f8b0d2e7'],
   })
   @Expose()
+  // amenities: Amenity[] = [];
   amenities?: any[];
 
   @ApiProperty({

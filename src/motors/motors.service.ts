@@ -40,9 +40,9 @@ export class MotorsService {
     return this.motorRepository.remove(id);
   }
 
-  creteFeature(createFeatureCto: CreateFeatureDto) {
-    return this.motorRepository.creteFeature(createFeatureCto);
-  }
+  // creteFeature(createFeatureCto: CreateFeatureDto) {
+  //   return this.motorRepository.creteFeature(createFeatureCto);
+  // }
 
   findFeature(): Promise<Feature[]> {
     return this.motorRepository.findFeature();
